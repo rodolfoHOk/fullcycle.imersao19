@@ -1,27 +1,26 @@
-# Imersão Fullcycle 19 - Plataforma de streaming de vídeos
+# Imersão FullCycle 19 - Plataforma de streaming de vídeos
 
 ## Descrição
 
-Repositório do Django (admin dos vídeos)
+Repositório do microsserviço Django (Admin dos vídeos)
 
-## Requerimentos
+## Tecnologias utilizadas
 
-Instalar o Python 3.12.6:
-
-- Mac: Baixe direto do site oficial
-- Windows (WSL 2) e Linux: Use o asdf: [https://asdf-vm.com/](). Rode os seguintes comandos:
-
-```bash
-sudo apt update
-
-sudo apt-get install build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev 
-
-asdf plugin add python
-asdf install python 3.12.6
-asdf global python 3.12.6
-```
+- Python
+- Django
+- PostgreSQL
+- Docker
+- HTML
+- CSS
+- Javascript
 
 ## Rodar a aplicação
+
+### Requerimentos
+
+- Python 3.12.6
+
+### Comandos
 
 Coloque a variável `PIPENV_VENV_IN_PROJECT` no seu `.bashrc` ou `.zshrc`:
 
@@ -72,3 +71,24 @@ python manage.py runserver
 ```
 
 Acesse o admin em [http://localhost:8000/admin]().
+
+## Guia de comandos utilizados
+
+- Fedora SilverBlue: rpm-ostree install python3-pip
+- terminal: sudo pip install pipenv
+- .zshrc: export PIPENV_VENV_IN_PROJECT=1
+- mkdir django
+- cd django
+- pipenv install django
+- pipenv shell
+- django-admin startproject videos
+- python manage.py runserver
+- python manage.py migrate
+- python manage.py createsuperuser
+- pipenv install psycopg2-binary
+- django-admin startapp core
+- python manage.py makemigrations
+
+## Readme principal
+
+- [README.md](../README.md)
