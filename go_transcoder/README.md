@@ -7,7 +7,8 @@ Repositório do microsserviço Golang (conversor de vídeos)
 ## Tecnologias utilizadas
 
 - Go Lang
-- 
+- PostgreSQL
+- Docker
 
 ## Rodar a aplicação
 
@@ -22,14 +23,17 @@ Através do PGAdmin, crie as tabelas do arquivo `db.sql` no banco de dados `conv
 Acesse o container o rodando o comando:
 
 ```bash
-docker compose exec go_app_dev bash
+docker compose exec -it go_app_dev bash
 ```
 
-Use os comandos `cmd/splitchunks/main.go` e `cmd/videoconverter/main.go` para rodar a aplicação, conforme a aula.
+Use os comandos `go run .cmd/splitchunks/main.go` e `go run .cmd/videoconverter/main.go` para rodar a aplicação, conforme a aula.
 
 # Guia de comandos utilizados
 
--
+- go mod init github.com/rodolfoHOk/fullcycle.imersao19/go_transcoder
+- go run ./cmd/videoconverter/main.go
+- docker-compose up -d
+- go mod tidy
 
 ## Readme principal
 

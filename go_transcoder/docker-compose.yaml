@@ -3,6 +3,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      DEBUG: 'true'
+      POSTGRES_USER: 'user'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'converter'
+      POSTGRES_HOST: 'postgres'
+      POSTGRES_SSL_MODE: 'disable'
     volumes:
       - .:/app
       - external-storage:/media/uploads
