@@ -12,15 +12,20 @@ import (
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/rodolfoHOk/fullcycle.imersao19/go_transcoder/internal/rabbitmq"
+	"github.com/streadway/amqp"
 )
 
 type VideoConverter struct {
-	db *sql.DB
+	db             *sql.DB
+	rabbitmqClient *rabbitmq.RabbitClient
 }
 
-func NewVideoConverter(db *sql.DB) *VideoConverter {
+func NewVideoConverter(db *sql.DB, rabbitmqClient *rabbitmq.RabbitClient) *VideoConverter {
 	return &VideoConverter{
-		db: db,
+		db:             db,
+		rabbitmqClient: rabbitmqClient,
 	}
 }
 
@@ -29,9 +34,9 @@ type VideoTask struct {
 	Path    string `json:"path"`
 }
 
-func (vc *VideoConverter) Handle(msg []byte) {
+func (vc *VideoConverter) Handle(d amqp.Delivery, conversionExchange, confirmationKey, confirmationQueue string) {
 	var task VideoTask
-	err := json.Unmarshal(msg, &task)
+	err := json.Unmarshal(d.Body, &task)
 	if err != nil {
 		vc.logError(task, "failed to unmarshal task", err)
 		return
@@ -39,6 +44,7 @@ func (vc *VideoConverter) Handle(msg []byte) {
 
 	if IsProcessed(vc.db, task.VideoID) {
 		slog.Warn("Video already processed", slog.Int("video_id", task.VideoID))
+		d.Ack(false)
 		return
 	}
 
@@ -53,7 +59,16 @@ func (vc *VideoConverter) Handle(msg []byte) {
 		vc.logError(task, "failed to mark video as processed", err)
 		return
 	}
+	d.Ack(false)
 	slog.Info("Video marked as processed", slog.Int("video_id", task.VideoID))
+
+	confirmationMessage := []byte(fmt.Sprintf(`{"video_id": %d, "path": "%s"}`, task.VideoID, task.Path))
+	err = vc.rabbitmqClient.PublishMessage(conversionExchange, confirmationKey, confirmationQueue, confirmationMessage)
+	if err != nil {
+		vc.logError(task, "failed to publish confirmation message", err)
+		return
+	}
+	slog.Info("Finish conversion message was published", slog.Int("video_id", task.VideoID))
 }
 
 func (vc *VideoConverter) processVideo(task *VideoTask) error {

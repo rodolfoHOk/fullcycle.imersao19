@@ -28,12 +28,16 @@ docker compose exec -it go_app_dev bash
 
 Use os comandos `go run .cmd/splitchunks/main.go` e `go run .cmd/videoconverter/main.go` para rodar a aplicação, conforme a aula.
 
-# Guia de comandos utilizados
+## Guia de comandos utilizados
 
 - go mod init github.com/rodolfoHOk/fullcycle.imersao19/go_transcoder
 - go run ./cmd/videoconverter/main.go
 - docker-compose up -d
 - go mod tidy
+
+## RabbitMQ
+
+- message format: {"video_id": 1, "path": "mediatest/media/uploads/1"}
 
 ## Readme principal
 

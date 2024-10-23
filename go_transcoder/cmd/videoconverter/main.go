@@ -8,6 +8,8 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/rodolfoHOk/fullcycle.imersao19/go_transcoder/internal/converter"
+	"github.com/rodolfoHOk/fullcycle.imersao19/go_transcoder/internal/rabbitmq"
+	"github.com/streadway/amqp"
 )
 
 func connectPostgres() (*sql.DB, error) {
@@ -46,6 +48,31 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	vc := converter.NewVideoConverter(db)
-	vc.Handle([]byte(`{"video_id": 1, "path": "mediatest/media/uploads/1"}`))
+	defer db.Close()
+
+	rabbitmqUrl := getEnvOrDefault("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
+	rabbitmqClient, err := rabbitmq.NewRabbitClient(rabbitmqUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer rabbitmqClient.Close()
+
+	conversionExchange := getEnvOrDefault("CONVERSION_EXCHANGE", "conversion_exchange")
+	conversionKey := getEnvOrDefault("CONVERSION_KEY", "conversion")
+	conversionQueue := getEnvOrDefault("CONVERSION_QUEUE", "video_conversion_queue")
+	confirmationKey := getEnvOrDefault("CONFIRMATION_KEY", "finish_conversion")
+	confirmationQueue := getEnvOrDefault("CONFIRMATION_QUEUE", "finish_conversion_queue")
+	msgs, err := rabbitmqClient.ConsumeMessages(conversionExchange, conversionKey, conversionQueue)
+	if err != nil {
+		slog.Error("Failed to consume messages", slog.String("error", err.Error()))
+	}
+
+	vc := converter.NewVideoConverter(db, rabbitmqClient)
+
+	for d := range msgs {
+		go func(delivery amqp.Delivery) {
+			vc.Handle(delivery, conversionExchange, confirmationKey, confirmationQueue)
+		}(d)
+	}
+
 }
