@@ -34,3 +34,13 @@ def videos_list_recommended(request, id):
     videos = Video.objects.filter(tags__in=tags).exclude(id=id).distinct().order_by('-num_views')
     serializer = VideoSerializer(videos, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def videos_get_likes(request, id):
+    video = Video.objects.get(id=id)
+    return Response({'likes': video.num_likes})
+
+@api_view(['GET'])
+def videos_get_views(request, id):
+    video = Video.objects.get(id=id)
+    return Response({'views': video.num_views})

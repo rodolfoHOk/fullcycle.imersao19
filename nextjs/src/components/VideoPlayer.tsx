@@ -32,7 +32,7 @@ export function VideoPlayer(props: VideoPlayerProps) {
       ref={videoNodeRef}
       className="w-full h-full"
       controls
-      autoPlay
+      autoPlay={false}
       poster={poster}
     />
   );

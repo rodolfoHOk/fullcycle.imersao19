@@ -5,9 +5,9 @@ import { ptBR } from 'date-fns/locale';
 import { VideoCardSkeleton } from '../../../components/VideoCardSkeleton';
 import { getVideo } from './getVideo';
 import { VideoPlayer } from '../../../components/VideoPlayer';
-// import { VideosRecommendList } from '../../../components/VideosRecommended';
-// import { VideoViews } from './VideoViews';
-// import { VideoLikeCounter } from './VideoLike';
+import { VideosRecommendList } from '../../../components/VideosRecommended';
+import { VideoViews } from './VideoViews';
+import { VideoLikeCounter } from './VideoLike';
 
 export default async function VideoPlayPage({
   params,
@@ -41,7 +41,7 @@ export default async function VideoPlayPage({
                   <div className="w-48 h-8 bg-secondary animate-pulse rounded mr-2"></div>
                 }
               >
-                {/* <VideoViews videoId={video.id} /> */}
+                <VideoViews videoId={video.id} />
 
                 <span>
                   &nbsp;há&nbsp;
@@ -57,7 +57,7 @@ export default async function VideoPlayPage({
                 <div className="w-24 h-8 bg-secondary animate-pulse rounded mr-2"></div>
               }
             >
-              {/* <VideoLikeCounter videoId={video.id} /> */}
+              <VideoLikeCounter videoId={video.id} />
             </Suspense>
           </div>
 
@@ -77,7 +77,7 @@ export default async function VideoPlayPage({
                 <VideoCardSkeleton orientation="horizontal" key={i} />
               ))}
             >
-              {/* <VideosRecommendList videoId={video.id} /> */}
+              <VideosRecommendList videoId={video.id} />
             </Suspense>
           </div>
         </div>
