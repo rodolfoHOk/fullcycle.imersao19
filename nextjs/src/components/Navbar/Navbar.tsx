@@ -1,5 +1,5 @@
 import Link from 'next/link';
-// import { SearchBar } from './SearchBar';
+import { SearchBar } from './SearchBar';
 
 export function Navbar() {
   return (
@@ -12,8 +12,7 @@ export function Navbar() {
         </div>
 
         <div className="w-1/2 relative">
-          {/* https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout */}
-          {/* <SearchBar /> */}
+          <SearchBar />
         </div>
 
         <div className="flex items-center space-x-4">
