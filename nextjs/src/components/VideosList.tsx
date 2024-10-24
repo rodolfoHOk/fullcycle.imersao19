@@ -28,8 +28,7 @@ export async function VideosList(props: VideoListProps) {
       <Link key={video.id} href={`/${video.slug}/play`}>
         <VideoCard
           title={video.title}
-          // thumbnail={video.thumbnail}
-          thumbnail={'/thumbnail.jpg'}
+          thumbnail={video.thumbnail}
           views={video.views}
         />
       </Link>
