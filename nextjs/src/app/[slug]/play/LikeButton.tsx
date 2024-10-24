@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { likeAction, unlikeAction } from '@/actions/like.action';
 
 export type NumLikeProps = {
   videoId: number;
@@ -13,7 +14,23 @@ export function LikeButton(props: NumLikeProps) {
   const [currentLikes, setCurrentLikes] = useState(initialLikes);
 
   async function onSubmit() {
-    console.log(videoId);
+    const likeChange = isLiked ? -1 : +1;
+    const updatedLikes = currentLikes + likeChange;
+
+    window.localStorage.setItem('isLiked', isLiked ? 'false' : 'true');
+    window.localStorage.setItem('currentLikes', updatedLikes.toString());
+
+    setCurrentLikes(updatedLikes);
+    setIsLiked(!isLiked);
+
+    const formData = new FormData();
+    formData.append('videoId', videoId.toString());
+
+    if (!isLiked) {
+      await likeAction(formData);
+    } else {
+      await unlikeAction(formData);
+    }
   }
 
   useEffect(() => {

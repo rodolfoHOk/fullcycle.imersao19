@@ -44,3 +44,17 @@ def videos_get_likes(request, id):
 def videos_get_views(request, id):
     video = Video.objects.get(id=id)
     return Response({'views': video.num_views})
+
+@api_view(['POST'])
+def videos_add_like(request, id):
+    video = Video.objects.get(id=id)
+    video.num_likes += 1
+    video.save()
+    return Response({'likes': video.num_likes})
+
+@api_view(['POST'])
+def videos_add_unlike(request, id):
+    video = Video.objects.get(id=id)
+    video.num_likes -= 1
+    video.save()
+    return Response({'likes': video.num_likes})
