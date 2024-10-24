@@ -26,3 +26,11 @@ def videos_detail_by_slug(request, slug):
     video = Video.objects.get(slug=slug)
     serializer = VideoSerializer(video)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def videos_list_recommended(request, id):
+    video = Video.objects.get(id=id)
+    tags = video.tags.all()
+    videos = Video.objects.filter(tags__in=tags).exclude(id=id).distinct().order_by('-num_views')
+    serializer = VideoSerializer(videos, many=True)
+    return Response(serializer.data)
