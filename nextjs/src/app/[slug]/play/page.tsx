@@ -16,6 +16,7 @@ export default async function VideoPlayPage({
 }) {
   const { slug } = await params;
   const video = await getVideo(slug);
+
   after(async () => {
     await fetch(`http://localhost:8000/api/videos/${video.id}/register-view`, {
       method: 'POST',

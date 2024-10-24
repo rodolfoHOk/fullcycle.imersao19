@@ -1,6 +1,6 @@
 from django.urls import path
 
-from core.api import videos_list, videos_detail_by_id, videos_detail_by_slug, videos_list_recommended, videos_get_likes, videos_get_views, videos_add_like, videos_add_unlike
+from core.api import videos_list, videos_detail_by_id, videos_detail_by_slug, videos_list_recommended, videos_get_likes, videos_get_views, videos_add_like, videos_add_unlike, videos_register_view
 
 urlpatterns = [
     path('api/videos', videos_list, name='api_videos_list'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('api/videos/<int:id>/views', videos_get_views, name='api_videos_get_views'),
     path('api/videos/<int:id>/like', videos_add_like, name='api_videos_add_like'),
     path('api/videos/<int:id>/unlike', videos_add_unlike, name='api_videos_add_unlike'),
+    path('api/videos/<int:id>/register-view', videos_register_view, name='api_videos_register_view'),
 ]

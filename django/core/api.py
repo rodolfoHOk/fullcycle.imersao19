@@ -58,3 +58,10 @@ def videos_add_unlike(request, id):
     video.num_likes -= 1
     video.save()
     return Response({'likes': video.num_likes})
+
+@api_view(['POST'])
+def videos_register_view(request, id):
+    video = Video.objects.get(id=id)
+    video.num_views += 1
+    video.save()
+    return Response({'views': video.num_views})

@@ -7,10 +7,10 @@ export async function getViews(videoId: number): Promise<number> {
   const response = await fetch(
     `http://localhost:8000/api/videos/${videoId}/views`,
     {
-      // cache: 'no-cache',
-      next: {
-        revalidate: 60,
-      },
+      cache: 'no-cache',
+      // next: {
+      //   revalidate: 60,
+      // },
     }
   );
   return (await response.json()).views;
