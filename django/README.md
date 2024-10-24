@@ -96,6 +96,10 @@ Acesse o admin em [http://localhost:8000/admin]().
 - pipenv install psycopg2-binary
 - django-admin startapp core
 - python manage.py makemigrations
+- python manage.py dumpdata
+- python manage.py flush
+- python manage.py loaddata initial_data
+- pipenv install djangorestframework
 
 ## Readme principal
 
