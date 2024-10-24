@@ -67,7 +67,15 @@ python manage.py createsuperuser
 Rode o servidor:
 
 ```bash
-python manage.py runserver
+python manage.py runserver 0.0.0.0:8000
+```
+
+```bash
+python manage.py consumer_register_processed_video_path
+```
+
+```bash
+python manage.py consumer_upload_chunks_to_external_storage
 ```
 
 Acesse o admin em [http://localhost:8000/admin]().

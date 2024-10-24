@@ -16,6 +16,8 @@ services:
       CONVERSION_QUEUE: 'video_conversion_queue'
       CONFIRMATION_KEY: 'finish_conversion'
       CONFIRMATION_QUEUE: 'finish_conversion_queue'
+    ports:
+      - '8080:8080'
     volumes:
       - .:/app
       - external-storage:/media/uploads
