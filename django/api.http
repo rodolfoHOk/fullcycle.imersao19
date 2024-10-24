@@ -1,2 +1,8 @@
 ###
 GET http://localhost:8000/api/videos
+
+###
+GET http://localhost:8000/api/videos/1
+
+###
+GET http://localhost:8000/api/videos/video-2

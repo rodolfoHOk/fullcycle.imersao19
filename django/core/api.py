@@ -14,3 +14,15 @@ def videos_list(request):
     query = videos.filter(is_published=True).order_by('-published_at').distinct()
     serializer = VideoSerializer(query, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def videos_detail_by_id(request, id):
+    video = Video.objects.get(id=id)
+    serializer = VideoSerializer(video)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def videos_detail_by_slug(request, slug):
+    video = Video.objects.get(slug=slug)
+    serializer = VideoSerializer(video)
+    return Response(serializer.data)
