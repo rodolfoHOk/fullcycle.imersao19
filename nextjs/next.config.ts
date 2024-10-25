@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
       {
         hostname: 'localhost',
       },
+      {
+        hostname: 'host.docker.internal',
+      },
     ],
   },
 };

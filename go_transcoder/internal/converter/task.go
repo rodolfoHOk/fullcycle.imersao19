@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -13,7 +14,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rodolfoHOk/fullcycle.imersao19/go_transcoder/internal/rabbitmq"
+	"github.com/rodolfoHOk/fullcycle.imersao19/go_transcoder/pkg/rabbitmq"
 	"github.com/streadway/amqp"
 )
 
@@ -34,7 +35,7 @@ type VideoTask struct {
 	Path    string `json:"path"`
 }
 
-func (vc *VideoConverter) Handle(d amqp.Delivery, conversionExchange, confirmationKey, confirmationQueue string) {
+func (vc *VideoConverter) HandleMessage(ctx context.Context, d amqp.Delivery, conversionExchange, confirmationKey, confirmationQueue string) {
 	var task VideoTask
 	err := json.Unmarshal(d.Body, &task)
 	if err != nil {

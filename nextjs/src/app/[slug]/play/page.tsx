@@ -18,9 +18,12 @@ export default async function VideoPlayPage({
   const video = await getVideo(slug);
 
   after(async () => {
-    await fetch(`http://localhost:8000/api/videos/${video.id}/register-view`, {
-      method: 'POST',
-    });
+    await fetch(
+      `${process.env.DJANGO_API_URL}/videos/${video.id}/register-view`,
+      {
+        method: 'POST',
+      }
+    );
   });
 
   return (

@@ -1,10 +1,20 @@
 package rabbitmq
 
 import (
+	"context"
 	"fmt"
+	"log/slog"
+	"time"
 
 	"github.com/streadway/amqp"
 )
+
+type RabbitClientInterface interface {
+	ConsumeMessages(exchange, routingKey, queueName string) (<-chan amqp.Delivery, error)
+	PublishMessage(exchange, routingKey, queueName string, message []byte) error
+	Close() error
+	IsClosed() bool
+}
 
 type RabbitClient struct {
 	conn    *amqp.Connection
@@ -20,14 +30,14 @@ func newConnection(url string) (*amqp.Connection, *amqp.Channel, error) {
 
 	channel, err := conn.Channel()
 	if err != nil {
-		conn.Close() // Ensure the connection is closed if channel creation fails
+		conn.Close()
 		return nil, nil, fmt.Errorf("failed to open channel: %v", err)
 	}
 
 	return conn, channel, nil
 }
 
-func NewRabbitClient(connectionURL string) (*RabbitClient, error) {
+func NewRabbitClient(ctx context.Context, connectionURL string) (*RabbitClient, error) {
 	conn, channel, err := newConnection(connectionURL)
 	if err != nil {
 		return nil, err
@@ -65,22 +75,24 @@ func (client *RabbitClient) ConsumeMessages(exchange, routingKey, queueName stri
 }
 
 func (client *RabbitClient) PublishMessage(exchange, routingKey, queueName string, message []byte) error {
-	// err := client.channel.ExchangeDeclare(exchange, "direct", true, true, false, false, nil)
-	// if err != nil {
-	// 	return fmt.Errorf("failed to declare exchange: %v", err)
-	// }
+	err := client.channel.ExchangeDeclare(
+		exchange, "direct", true, true, false, false, nil)
+	if err != nil {
+		return fmt.Errorf("failed to declare exchange: %v", err)
+	}
 
-	// _, err = client.channel.QueueDeclare(queueName, true, true, false, false, nil)
-	// if err != nil {
-	// 	return fmt.Errorf("failed to declare queue: %v", err)
-	// }
+	_, err = client.channel.QueueDeclare(
+		queueName, true, true, false, false, nil)
+	if err != nil {
+		return fmt.Errorf("failed to declare queue: %v", err)
+	}
 
-	// err = client.channel.QueueBind(queueName, routingKey, exchange, false, nil)
-	// if err != nil {
-	// 	return fmt.Errorf("failed to bind queue to exchange: %v", err)
-	// }
+	err = client.channel.QueueBind(queueName, routingKey, exchange, false, nil)
+	if err != nil {
+		return fmt.Errorf("failed to bind queue to exchange: %v", err)
+	}
 
-	err := client.channel.Publish(exchange, routingKey, false, false, amqp.Publishing{
+	err = client.channel.Publish(exchange, routingKey, false, false, amqp.Publishing{
 		ContentType: "application/json",
 		Body:        message,
 	})
@@ -88,6 +100,10 @@ func (client *RabbitClient) PublishMessage(exchange, routingKey, queueName strin
 		return fmt.Errorf("failed to publish message: %v", err)
 	}
 	return nil
+}
+
+func (client *RabbitClient) IsClosed() bool {
+	return client.conn.IsClosed()
 }
 
 func (client *RabbitClient) Close() error {
@@ -100,4 +116,23 @@ func (client *RabbitClient) Close() error {
 		return fmt.Errorf("failed to close connection: %v", err)
 	}
 	return nil
+}
+
+func (client *RabbitClient) Reconnect(ctx context.Context) error {
+	var err error
+	for {
+		select {
+		case <-ctx.Done():
+			return fmt.Errorf("context canceled while trying to reconnect")
+		default:
+			slog.Info("Attempting to reconnect to RabbitMQ...")
+			client.conn, client.channel, err = newConnection(client.url)
+			if err == nil {
+				slog.Info("Reconnected to RabbitMQ successfully")
+				return nil
+			}
+			slog.Error("Failed to reconnect to RabbitMQ", slog.String("error", err.Error()))
+			time.Sleep(5 * time.Second)
+		}
+	}
 }

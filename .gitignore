@@ -3,3 +3,4 @@ go_transcoder/mediatest/media/
 go_transcoder/.docker/
 django/.docker/
 django/core/fixtures/
+postgres/.docker/

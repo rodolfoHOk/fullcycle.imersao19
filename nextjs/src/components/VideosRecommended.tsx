@@ -9,7 +9,7 @@ export async function getVideosRecommended(
 ): Promise<VideoModel[]> {
   await sleep(2000);
   const response = await fetch(
-    `http://localhost:8000/api/videos/${videoId}/recommended`,
+    `${process.env.DJANGO_API_URL}/videos/${videoId}/recommended`,
     {
       cache: 'no-cache',
     }

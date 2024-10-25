@@ -2,6 +2,19 @@
 
 > Evento realizado pela FullCycle / CodeEdu
 
+## Tecnologias
+
+- Python
+- Django Framework
+- Golang
+- RabbitMQ
+- PostgreSQL
+- Nginx
+- Typescript / Javascript
+- Next.js / React.js
+- Tailwind CSS
+- Docker e Docker Compose
+
 ## Sobre o Projeto
 
 ![Sobre o projeto 01](/files/ifc19-01.png)
@@ -22,3 +35,4 @@
 
 - [Microsserviço Django - Admin dos vídeos](/django/README.md)
 - [Microsserviço Golang - Conversor de vídeos](/go_transcoder/README.md)
+- [Microsserviço Nextjs - Frontend](/nextjs/README.md)
